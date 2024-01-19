@@ -111,7 +111,7 @@ licence: AGPLv3
 
 		// Function to send a GET request to update.php
 		function updateServer(row, col, colorIndex) {
-			const url = 'update.php?row=${row}&col=${col}&color=${colorIndex}';
+			const url = `update.php?row=${row}&col=${col}&color=${colorIndex}`;
 			fetch(url)
 				.then(response => {
 					if (!response.ok) {
