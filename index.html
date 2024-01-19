@@ -1,134 +1,152 @@
 <!-- 
 The Grid
-v0.1: 2023-01-18
+v0.2: 2023-01-18
 by aaviator42
 licence: AGPLv3
 -->
 
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta name="robots" content="noindex, nofollow, noarchive">
+    <meta name="robots" content="noindex, nofollow, noarchive">
     <title>The Grid</title>
-	<style>
-		body {
-			margin: 0;
-			padding: 0;
-			background-color: black;
-			/* overflow: hidden; */
-		}
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: black;
+            /* overflow: hidden; */
+        }
 
-		table {
-			border-collapse: collapse;
-			width: 100em; /* 100 cells * 1em */
-			height: 100em; /* 100 cells * 1em */
-			margin: auto;
-		}
+        table {
+            border-collapse: collapse;
+            width: 100em; /* 100 cells * 1em */
+            height: 100em; /* 100 cells * 1em */
+            margin: auto;
+        }
 
-		td {
-			width: 1em;
-			height: 1em;
-			cursor: pointer;
-			border: 1px dotted #333333;
-			background-color: black;
-		}
-		
-		td:hover {
-			border: 1px solid pink;
-		}
-	</style>
+        td {
+            width: 1em;
+            height: 1em;
+            cursor: pointer;
+            border: 1px dotted #333333;
+            background-color: black;
+        }
+
+        td:hover {
+            border: 1px solid pink;
+        }
+    </style>
 </head>
 
 <body>
 
-	<table id="gridTable">
-		<tbody></tbody>
-	</table>
+    <table id="gridTable">
+        <tbody></tbody>
+    </table>
 
-	<script>
-		// Define color sequence
-		const colorSequence = ['black', 'white', 'red', 'lime', 'yellow', 'blue', 'magenta', 'cyan'];
+    <script>
+        // Define color sequence
+        const colorSequence = ['black', 'white', 'red', 'lime', 'yellow', 'blue', 'magenta', 'cyan'];
 
-		// Variable to track the last click time with default value one second before loading time
-		let lastClick = new Date(Date.now() - 1000);
+        // Variable to track the last click time with default value one second before loading time
+        let lastClick = new Date(Date.now() - 1000);
 
-		// Function to fetch data from current.php and update the table
-		function updateGrid() {
-			const now = new Date();
-			const timeDiffInSeconds = (now - lastClick) / 1000;
+        // Function to fetch data from current.php and update the table
+        function updateGrid() {
+            const now = new Date();
+            const timeDiffInSeconds = (now - lastClick) / 1000;
 
-			// Check if at least one second has passed since the last click
-			if (timeDiffInSeconds >= 1) {
-				fetch('current.php')
-					.then(response => response.json())
-					.then(data => {
-						const gridTable = document.getElementById('gridTable');
-						const tbody = gridTable.getElementsByTagName('tbody')[0];
+            // Check if at least one second has passed since the last click
+            if (timeDiffInSeconds >= 1) {
+                fetch('current.php')
+                    .then(response => response.json())
+                    .then(data => {
+                        const gridTable = document.getElementById('gridTable');
+                        const tbody = gridTable.getElementsByTagName('tbody')[0];
 
-						// Clear existing rows
-						tbody.innerHTML = '';
+                        // Clear existing rows
+                        tbody.innerHTML = '';
 
-						// Create new rows and cells based on the JSON data
-						for (let i = 0; i < data.length; i++) {
-							const row = document.createElement('tr');
-							for (let j = 0; j < data[i].length; j++) {
-								const cell = document.createElement('td');
-								cell.style.backgroundColor = getColor(data[i][j]);
-								// Add click event listener to toggle cell color and update server
-								cell.addEventListener('click', () => {
-									lastClick = new Date(); // Update lastClick on each click
-									toggleCellColor(cell, i, j);
-								});
-								row.appendChild(cell);
-							}
-							tbody.appendChild(row);
-						}
-					})
-					.catch(error => console.error('Error fetching data:', error));
-			}
-		}
+                        // Create new rows and cells based on the JSON data
+                        for (let i = 0; i < data.length; i++) {
+                            const row = document.createElement('tr');
+                            for (let j = 0; j < data[i].length; j++) {
+                                const cell = document.createElement('td');
+                                cell.style.backgroundColor = getColor(data[i][j]);
 
-		// Function to map values to corresponding colors
-		function getColor(value) {
-			return colorSequence[value % colorSequence.length];
-		}
+                                // Add click event listener to toggle cell color and update server
+                                cell.addEventListener('click', () => {
+                                    lastClick = new Date(); // Update lastClick on each click
+                                    toggleCellColor(cell, i, j);
+                                });
 
-		// Function to toggle cell color and update server
-		function toggleCellColor(cell, row, col) {
-			const currentColor = cell.style.backgroundColor;
-			const currentIndex = colorSequence.indexOf(currentColor);
-			const nextIndex = (currentIndex + 1) % colorSequence.length;
-			const nextColor = colorSequence[nextIndex];
+                                // Add right-click event listener to set the cell color to black and update server
+                                cell.addEventListener('contextmenu', (event) => {
+                                    event.preventDefault();
+                                    lastClick = new Date(); // Update lastClick on right-click
+                                    setCellColor(cell, i, j, 'black');
+                                });
 
-			// Update cell color on the client side
-			cell.style.backgroundColor = nextColor;
+                                row.appendChild(cell);
+                            }
+                            tbody.appendChild(row);
+                        }
+                    })
+                    .catch(error => console.error('Error fetching data:', error));
+            }
+        }
 
-			// Send a GET request to update.php to update server state
-			updateServer(row, col, nextIndex);
-		}
+        // Function to map values to corresponding colors
+        function getColor(value) {
+            return colorSequence[value % colorSequence.length];
+        }
 
-		// Function to send a GET request to update.php
-		function updateServer(row, col, colorIndex) {
-			const url = `update.php?row=${row}&col=${col}&color=${colorIndex}`;
-			fetch(url)
-				.then(response => {
-					if (!response.ok) {
-						throw new Error('Network response was not ok');
-					}
-				})
-				.catch(error => console.error('Error updating server:', error));
-		}
+        // Function to toggle cell color and update server
+        function toggleCellColor(cell, row, col) {
+            const currentColor = cell.style.backgroundColor;
+            const currentIndex = colorSequence.indexOf(currentColor);
+            const nextIndex = (currentIndex + 1) % colorSequence.length;
+            const nextColor = colorSequence[nextIndex];
 
-		// Initial load
-		updateGrid();
+            // Update cell color on the client side
+            cell.style.backgroundColor = nextColor;
 
-		// Refresh the grid every 3 seconds (adjust as needed)
-		setInterval(updateGrid, 3000);
-	</script>
+            // Send a GET request to update.php to update server state
+            updateServer(row, col, nextIndex);
+        }
 
+        // Function to set cell color to black and update server
+        function setCellColor(cell, row, col, color) {
+            cell.style.backgroundColor = color;
 
+            // Send a GET request to update.php to update server state
+            updateServer(row, col, colorSequence.indexOf(color));
+        }
+
+        // Function to send a GET request to update.php
+        function updateServer(row, col, colorIndex) {
+            const url = `update.php?row=${row}&col=${col}&color=${colorIndex}`;
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                })
+                .catch(error => console.error('Error updating server:', error));
+        }
+
+        // Initial load
+        updateGrid();
+
+        // Refresh the grid every 3 seconds (adjust as needed)
+        setInterval(updateGrid, 3000);
+    </script>
 
 </body>
+
 </html>
