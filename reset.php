@@ -1,11 +1,15 @@
 <?php
-// Function to generate a random 100x100 array with values between 0 and 0
+// Reset grid to all black cells
+// the-grid by aaviator42
+// 2023-01-18, v0.1, AGPLv3
+
+// Function to generate a 100x100 array with all values 0
 function generateZeroArray() {
     $array = array();
     for ($i = 0; $i < 100; $i++) {
         $row = array();
         for ($j = 0; $j < 100; $j++) {
-            $row[] = rand(0, 0);
+            $row[] = 0;
         }
         $array[] = $row;
     }
@@ -15,10 +19,12 @@ function generateZeroArray() {
 // Generate black grid array
 $grid = generateZeroArray();
 
+// Delete current.db
 if(file_exists('current.db')){
 	unlink('current.db');
 }
 
+// Create new current.db
 require 'lib/StorX.php';
 $sx = new \StorX\Sx;
 $sx->createFile('current.db');
