@@ -5,7 +5,7 @@ License: `AGPLv3`
 
 **Try it out**: an online instance can be found [here](https://aavi.xyz/proj/grid/). 
 
-Wrote this in <2 hours as a challenge. The entire project is <200 lines of code.
+Originally wrote this in <2 hours as a challenge. The entire project is <250 lines of code.
 
 Simply upload all files to a server with a modern version of PHP (8+) and you should be good to go. 
 
