@@ -9,4 +9,4 @@ Originally wrote this in <2 hours as a challenge. The entire project is <250 lin
 
 Simply upload all files to a server with a modern version of PHP (8+) and you should be good to go. 
 
-Gird state on the server-side is stored in an SQLite file, powered by [StorX](https://github.com/aaviator42/StorX).
+Grid state on the server-side is stored in an SQLite file, powered by [StorX](https://github.com/aaviator42/StorX).
