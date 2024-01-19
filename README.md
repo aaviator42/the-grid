@@ -1,6 +1,6 @@
 # The Grid
 A colaborative online pixel grid canvas, inspired by r/place.  
-`v0.1`: `2024-01-18`  
+`v0.2`: `2024-01-18`  
 License: `AGPLv3`
 
 **Try it out**: an online instance can be found [here](https://aavi.xyz/proj/grid/). 
