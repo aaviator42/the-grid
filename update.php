@@ -1,7 +1,7 @@
  <?php
 // Update pixel values in current.db
 // the-grid by aaviator42
-// 2023-01-18, v0.1, AGPLv3
+// 2024-01-18, v0.1, AGPLv3
 
 
 if(!(isset($_GET["row"]) && isset($_GET["col"]) && isset($_GET["color"]))){
