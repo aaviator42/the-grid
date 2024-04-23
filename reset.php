@@ -1,7 +1,7 @@
 <?php
 // Reset grid to all black cells
 // the-grid by aaviator42
-// 2024-01-18, v0.1, AGPLv3
+// 2024-01-18, v0.2, AGPLv3
 
 // Function to generate a 100x100 array with all values 0
 function generateZeroArray() {
