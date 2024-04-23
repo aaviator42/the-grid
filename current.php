@@ -1,7 +1,7 @@
 <?php
 // Return current grid state as JSON array
 // the-grid by aaviator42
-// 2024-01-18, v0.1, AGPLv3
+// 2024-01-18, v0.2, AGPLv3
 
 require 'lib/StorX.php';
 $sx = new \StorX\Sx;
